@@ -1,0 +1,15 @@
+FROM golang:1.17-alpine
+WORKDIR /samuel-app-event
+
+build:
+    COPY go.mod go.sum .
+    RUN go mod download
+    COPY . .
+    RUN go build -o build/samuel-app-event .
+    SAVE ARTIFACT build/samuel-app-event /samuel-app-event AS LOCAL build/samuel-app-event
+
+docker:
+    COPY +build/samuel-app-event .
+    ENTRYPOINT ["/samuel-app-event/samuel-app-event"]
+    SAVE IMAGE samuel-app-event:latest
+

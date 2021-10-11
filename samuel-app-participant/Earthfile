@@ -1,0 +1,15 @@
+FROM golang:1.17-alpine
+WORKDIR /samuel-app-participant
+
+build:
+    COPY go.mod go.sum .
+    RUN go mod download
+    COPY . .
+    RUN go build -o build/samuel-app-participant .
+    SAVE ARTIFACT build/samuel-app-participant /samuel-app-participant AS LOCAL build/samuel-app-participant
+
+docker:
+    COPY +build/samuel-app-participant .
+    ENTRYPOINT ["/samuel-app-participant/samuel-app-participant"]
+    SAVE IMAGE samuel-app-participant:latest
+
